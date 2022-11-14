@@ -33,10 +33,7 @@ app.use(
   }),
   passport.session(),
   passport.initialize(),
-  cors({
-    origin: backend.origin,
-    credentials: true,
-  }),
+  cors(),
   express.json(),
   express.urlencoded({ extended: true }),
   [join, part]
