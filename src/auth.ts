@@ -34,7 +34,7 @@ app.use(
   passport.session(),
   passport.initialize(),
   cors({
-    origin: "https://next.poros.lol",
+    origin: "http://localhost:8000",
     credentials: true,
   }),
   express.json(),
