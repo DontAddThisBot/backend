@@ -33,7 +33,10 @@ app.use(
   }),
   passport.session(),
   passport.initialize(),
-  cors(),
+  cors({
+    origin: "http://localhost:8000",
+    credentials: true,
+  }),
   express.json(),
   express.urlencoded({ extended: true }),
   [join, part]
