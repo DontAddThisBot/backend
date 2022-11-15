@@ -34,7 +34,7 @@ app.use(
   passport.session(),
   passport.initialize(),
   cors({
-    origin: "https://next.poros.lol",
+    origin: backend.origin,
     credentials: true,
   }),
   express.json(),
@@ -121,7 +121,7 @@ app.get("/api/twitch", (req: any, res: any) => {
   }
 });
 
-app.get("/api/logout", (req: any, res: any) => {
+app.get("/api/twitch/logout", (req: any, res: any) => {
   req.session.destroy((err: any) => {
     if (err) {
       return res.send({ success: false, error: err });
