@@ -8,6 +8,7 @@ import { backend } from "../config.json";
 
 import join from "./routes/join";
 import part from "./routes/part";
+import createUser from "./routes/createUser";
 
 const app = express();
 
@@ -39,7 +40,7 @@ app.use(
   }),
   express.json(),
   express.urlencoded({ extended: true }),
-  [join, part]
+  [join, part, createUser]
 );
 
 OAuth2Strategy.prototype.userProfile = function (accessToken: string, done) {
@@ -127,7 +128,6 @@ app.get("/api/twitch/logout", (req: any, res: any) => {
       return res.send({ success: false, error: err });
     }
     res.clearCookie("connect.sid");
-    return res.redirect(backend.origin);
   });
 });
 

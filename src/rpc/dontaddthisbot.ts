@@ -23,3 +23,11 @@ export async function partChannelByUsername(username: string) {
   const json = await request.json();
   return json;
 }
+
+export async function createUser(userID: any, username: string) {
+  const request = await fetch(`${HOSTNAME}/bot/create/${userID}/${username}`, {
+    method: "POST",
+  });
+  const json = await request.json();
+  return json;
+}
