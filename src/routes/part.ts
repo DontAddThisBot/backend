@@ -1,16 +1,10 @@
 import express from "express";
 const router = express.Router();
 import { partChannelByUsername } from "../rpc/dontaddthisbot";
+import { middleWare } from "../middleware/middleware";
 
-router.post(`/api/bot/part`, async (req: any, res: any) => {
-  if (!req.session || !req.session.passport || !req.session.passport.user) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-    });
-  }
-
-  const { login } = req.session.passport.user.data[0];
+router.post(`/api/bot/part`, middleWare, async (req: any, res: any) => {
+  const { login } = req.user.data[0];
 
   const r = await partChannelByUsername(login);
   if (!r.success) {

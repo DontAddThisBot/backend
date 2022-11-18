@@ -4,7 +4,10 @@ import passport from "passport";
 import { Strategy as OAuth2Strategy } from "passport-oauth2";
 import request from "request";
 import cors from "cors";
-import { backend } from "../config.json";
+import { backend, token } from "../config.json";
+import parser from "cookie-parser";
+import jwt from "jsonwebtoken";
+import { middleWare } from "./middleware/middleware";
 
 import join from "./routes/join";
 import part from "./routes/part";
@@ -40,6 +43,7 @@ app.use(
   }),
   express.json(),
   express.urlencoded({ extended: true }),
+  parser(),
   [join, part, createUser]
 );
 
@@ -108,27 +112,29 @@ app.get("/auth/twitch", passport.authenticate("twitch", { scope: "" }));
 
 app.get(
   "/auth/twitch/callback",
-  passport.authenticate("twitch", {
-    successRedirect: backend.origin,
-    failureRedirect: "/",
-  })
+  passport.authenticate("twitch"),
+  (req: any, res: any, next) => {
+    if (req.session && req.session.passport && req.session.passport.user) {
+      const info = req.session.passport.user;
+      const signToken = jwt.sign(info, token.key);
+      res.clearCookie("connect.sid");
+      res.cookie("token", signToken, {
+        httpOnly: true,
+      });
+
+      res.redirect(backend.origin);
+    }
+  }
 );
 
-app.get("/api/twitch", (req: any, res: any) => {
-  if (req.session && req.session.passport && req.session.passport.user) {
-    return res.send({ success: true, id: req.session.passport });
-  } else {
-    return res.status(401).send({ success: false, error: "Unauthorized" });
-  }
+app.get("/api/twitch", middleWare, (req: any, res: any) => {
+  console.log(req.user);
+  return res.status(200).send({ success: true, id: req.user });
 });
 
 app.get("/api/twitch/logout", (req: any, res: any) => {
-  req.session.destroy((err: any) => {
-    if (err) {
-      return res.send({ success: false, error: err });
-    }
-    res.clearCookie("connect.sid");
-  });
+  res.clearCookie("token");
+  res.redirect(backend.origin);
 });
 
 app.listen(backend.port, () => {
