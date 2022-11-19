@@ -4,7 +4,7 @@ import { partChannelByUsername } from "../rpc/dontaddthisbot";
 import { middleWare } from "../middleware/middleware";
 
 router.post(`/api/bot/part`, middleWare, async (req: any, res: any) => {
-  const { login } = req.user.data[0];
+  const { login } = req.user;
 
   const r = await partChannelByUsername(login);
   if (!r.success) {

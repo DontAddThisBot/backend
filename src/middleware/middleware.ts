@@ -9,7 +9,6 @@ export function middleWare(req: any, res: any, next: any) {
 
   try {
     const decoded = jwt.verify(cookieToken, token.key);
-    console.log("exist");
     req.user = decoded;
     next();
   } catch (e) {

@@ -1,16 +1,10 @@
 import express from "express";
 const router = express.Router();
 import { createUser } from "../rpc/dontaddthisbot";
+import { middleWare } from "../middleware/middleware";
 
-router.post(`/api/bot/create`, async (req: any, res: any) => {
-  if (!req.session || !req.session.passport || !req.session.passport.user) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-    });
-  }
-
-  const { login, id } = req.session.passport.user.data[0];
+router.post(`/api/bot/create`, middleWare, async (req: any, res: any) => {
+  const { id, login } = req.user;
 
   const r = await createUser(id, login);
   if (!r.success) {
