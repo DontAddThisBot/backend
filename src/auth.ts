@@ -35,7 +35,7 @@ app.post("/redirect", async (req: any, res: any) => {
   const { path } = req.body;
   await res.cookie("current", path, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
