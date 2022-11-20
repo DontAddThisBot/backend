@@ -17,20 +17,13 @@ const TWITCH_CLIENT_ID = backend.client_id;
 const TWITCH_SECRET = backend.client_secret;
 const CALLBACK_URL = backend.callback_url;
 
-app.use(
-  cors({
-    origin: backend.origin,
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-  express.json(),
-  express.urlencoded({ extended: true }),
-  parser(),
-  [join, part, createUser]
-);
+app.use(express.json(), express.urlencoded({ extended: true }), parser(), [
+  join,
+  part,
+  createUser,
+]);
 
 app.post("/redirect", async (req: any, res: any) => {
-  res.set("Access-Control-Allow-Origin", "*");
   console.log("got request", req.body);
   const { path } = req.body;
   res.cookie("current", path, {
