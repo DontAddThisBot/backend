@@ -28,7 +28,7 @@ app.use(
 app.post("/redirect", async (req: any, res: any) => {
   console.log("got request", req.body);
   const { path } = req.body;
-  res.cookie("current", path, {
+  await res.cookie("current", path, {
     httpOnly: true,
     secure: true,
     sameSite: "none",
@@ -36,7 +36,7 @@ app.post("/redirect", async (req: any, res: any) => {
   });
 
   console.log("success");
-  res.status(200).send({ success: true });
+  return await res.status(200).send({ success: true });
 });
 
 app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
