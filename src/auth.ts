@@ -29,13 +29,14 @@ app.use(
 );
 
 app.post("/redirect", async (req: any, res: any) => {
+  console.log("got request", req.body);
   const { path } = req.body;
   res.cookie("current", path, {
     httpOnly: true,
-    secure: true,
   });
 
-  return res.status(200).send({ success: true });
+  console.log("success");
+  res.status(200).send({ success: true });
 });
 
 app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
