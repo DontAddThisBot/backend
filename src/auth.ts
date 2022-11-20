@@ -29,8 +29,7 @@ app.use(
 );
 
 app.post("/redirect", async (req: any, res: any) => {
-  console.log("got request", req.body);
-  const { path } = req.body;
+  const { path } = req.query;
   await res.cookie("current", path, {
     httpOnly: true,
   });
