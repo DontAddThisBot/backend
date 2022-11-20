@@ -17,7 +17,6 @@ const TWITCH_CLIENT_ID = backend.client_id;
 const TWITCH_SECRET = backend.client_secret;
 const CALLBACK_URL = backend.callback_url;
 
-console.log(backend.origin);
 app.use(
   cors({
     origin: backend.origin,
@@ -74,12 +73,22 @@ app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
 
 app.post("/redirect", async (req: any, res: any) => {
   const { path } = req.body;
-  await res.cookie("current", path, {
-    httpOnly: true,
-    secure: true,
-  });
-  console.log("success");
-  return await res.status(200).send({ success: true });
+  if (path) {
+    try {
+      await res.cookie("current", path, {
+        httpOnly: true,
+        secure: true,
+      });
+
+      return res.status(200).json({ success: true, message: "success" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal Error" });
+    }
+  }
+
+  return res.status(400).json({ success: false, message: "failed" });
 });
 
 app.get("/api/twitch", middleWare, async (req: any, res: any) => {
