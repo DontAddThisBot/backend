@@ -29,7 +29,7 @@ app.use(
   [join, part, createUser]
 );
 
-app.get("/redirect", async (req: any, res: any) => {
+app.post("/redirect", async (req: any, res: any) => {
   console.log("got request", req.body);
   const { path } = req.body;
   await res.cookie("current", path, {
