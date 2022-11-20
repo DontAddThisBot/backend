@@ -17,11 +17,13 @@ const TWITCH_CLIENT_ID = backend.client_id;
 const TWITCH_SECRET = backend.client_secret;
 const CALLBACK_URL = backend.callback_url;
 
-app.use(express.json(), express.urlencoded({ extended: true }), parser(), [
-  join,
-  part,
-  createUser,
-]);
+app.use(
+  cors({ origin: true, credentials: true }),
+  express.json(),
+  express.urlencoded({ extended: true }),
+  parser(),
+  [join, part, createUser]
+);
 
 app.post("/redirect", async (req: any, res: any) => {
   console.log("got request", req.body);
