@@ -37,6 +37,7 @@ app.post("/redirect", async (req: any, res: any) => {
 });
 
 app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
+  console.log(req.body);
   const { current } = req.cookies;
   if (req.cookies?.token) {
     return res.redirect(backend.origin + current);
