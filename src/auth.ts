@@ -10,6 +10,7 @@ import { getTwitchProfile } from "./token/getTwitchProfile";
 import join from "./routes/join";
 import part from "./routes/part";
 import createUser from "./routes/createUser";
+import session from "express-session";
 
 const app = express();
 
@@ -19,6 +20,17 @@ const CALLBACK_URL = backend.callback_url;
 
 console.log(backend.origin);
 app.use(
+  session({
+    secret: "ASDASDASDASD",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      httpOnly: true,
+      domain: ".poros.lol",
+    },
+  }),
   cors({
     origin: backend.origin,
     credentials: true,
