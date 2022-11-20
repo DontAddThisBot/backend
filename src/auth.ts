@@ -25,6 +25,7 @@ app.use(
     optionsSuccessStatus: 200,
   }),
   express.json(),
+  parser(),
   [join, part, createUser]
 );
 
