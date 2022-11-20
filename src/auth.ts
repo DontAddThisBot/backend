@@ -21,6 +21,7 @@ app.use(
   cors({
     origin: backend.origin,
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
   express.json(),
   express.urlencoded({ extended: true }),
