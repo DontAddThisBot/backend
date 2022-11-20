@@ -10,7 +10,6 @@ import { getTwitchProfile } from "./token/getTwitchProfile";
 import join from "./routes/join";
 import part from "./routes/part";
 import createUser from "./routes/createUser";
-import session from "express-session";
 
 const app = express();
 
@@ -20,17 +19,6 @@ const CALLBACK_URL = backend.callback_url;
 
 console.log(backend.origin);
 app.use(
-  session({
-    secret: "ASDASDASDASD",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: true,
-      domain: ".poros.lol",
-    },
-  }),
   cors({
     origin: backend.origin,
     credentials: true,
@@ -76,7 +64,7 @@ app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
   };
 
   const signJWT = jwt.sign(info, token.key);
-  res.cookie("token", signJWT, {
+  await res.cookie("token", signJWT, {
     httpOnly: true,
     secure: true,
   });
@@ -86,7 +74,10 @@ app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
 
 app.get("/redirect", async (req: any, res: any) => {
   const { path } = req.query;
-  await res.cookie("current", path);
+  await res.cookie("current", path, {
+    httpOnly: true,
+    secure: true,
+  });
 
   console.log("success");
   return await res.status(200).send({ success: true });
