@@ -17,8 +17,13 @@ const TWITCH_CLIENT_ID = backend.client_id;
 const TWITCH_SECRET = backend.client_secret;
 const CALLBACK_URL = backend.callback_url;
 
+console.log(backend.origin);
 app.use(
-  cors({ origin: true, credentials: true }),
+  cors({
+    origin: backend.origin,
+    credentials: true,
+    optionsSuccessStatus: 200,
+  }),
   express.json(),
   express.urlencoded({ extended: true }),
   parser(),
