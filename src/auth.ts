@@ -28,9 +28,20 @@ app.use(
   [join, part, createUser]
 );
 
+app.post("/redirect", async (req: any, res: any) => {
+  const { path } = req.body;
+  res.cookie("current", path, {
+    httpOnly: true,
+    secure: true,
+  });
+
+  return res.status(200).send({ success: true });
+});
+
 app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
+  const { current } = req.cookies;
   if (req.cookies?.token) {
-    return res.redirect("/");
+    return res.redirect(backend.origin + current);
   }
 
   const { code, state } = req.query;
@@ -53,7 +64,7 @@ app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
 
   const profile = await getTwitchProfile(access_token, TWITCH_CLIENT_ID);
   if (!profile) {
-    return res.redirect("/");
+    return res.redirect(backend.origin + current);
   }
 
   const info = {
@@ -67,22 +78,26 @@ app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
     secure: true,
   });
 
-  res.redirect(backend.origin);
+  return res.redirect(backend.origin + current);
 });
 
 app.get("/api/twitch", middleWare, async (req: any, res: any) => {
-  const userInfo = await getTwitchProfile(
-    token.access_token,
-    token.client_id,
-    req.user.id
-  );
-
-  return res.status(200).send({ success: true, id: { data: userInfo } });
+  try {
+    const userInfo = await getTwitchProfile(
+      token.access_token,
+      token.client_id,
+      req.user.id
+    );
+    return res.status(200).send({ success: true, id: { data: userInfo } });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err });
+  }
 });
 
 app.post("/api/twitch/logout", middleWare, (req: any, res: any) => {
   res.clearCookie("connect.sid");
   res.clearCookie("token");
+  res.clearCookie("current");
   return res.status(200).send({ success: true });
 });
 
