@@ -22,7 +22,6 @@ app.use(
   cors({
     origin: backend.origin,
     credentials: true,
-    optionsSuccessStatus: 200,
   }),
   express.json(),
   parser(),
@@ -33,8 +32,7 @@ app.post("/redirect", async (req: any, res: any) => {
   console.log("got request", req.body);
   const { path } = req.body;
   await res.cookie("current", path, {
-    httpOnly: false,
-    secure: false,
+    httpOnly: true,
   });
 
   console.log("success");
