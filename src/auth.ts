@@ -29,7 +29,6 @@ app.use(
 );
 
 app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
-  console.log(req.cookies);
   const { current } = req.cookies;
   if (req.cookies?.token) {
     return res.redirect(backend.origin + current);
@@ -72,13 +71,14 @@ app.get("/auth/twitch/callback", async (req: any, res: any, next) => {
   return res.redirect(backend.origin + current);
 });
 
-app.get("/redirect", async (req: any, res: any) => {
+app.post("/redirect", async (req: any, res: any) => {
   const { path } = req.query;
   await res.cookie("current", path, {
     httpOnly: true,
     secure: true,
   });
 
+  console.log(req.cookies);
   console.log("success");
   return await res.status(200).send({ success: true });
 });
